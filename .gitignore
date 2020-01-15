@@ -4,3 +4,11 @@ composer.phar
 # Commit your application's lock file https://getcomposer.org/doc/01-basic-usage.md#commit-your-composer-lock-file-to-version-control
 # You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file
 # composer.lock
+
+# so, what all that means is.... to save time later, you can commit the composer.lock file. 
+# Then you won't have to re-run the composer --update everytime you want to copy/paste your project.
+# However, if your installing in new environment, there is less chance of a headach if you run update.
+
+# ignore application configuration
+dropbox-webapp-config.php
+
