@@ -10,5 +10,5 @@ composer.phar
 # However, if your installing in new environment, there is less chance of a headach if you run update.
 
 # ignore application configuration
-dropbox-webapp-config.php
+webapp.config.php
 
