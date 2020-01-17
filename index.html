@@ -1,0 +1,126 @@
+<!doctype html>
+<html class="no-js" lang="en" dir="ltr">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>GameSolids Dropbox Webapp</title>
+		<link rel="stylesheet" href="assets/css/all.min.css">
+		<link rel="stylesheet" href="assets/css/foundation.min.css">
+		<link rel="stylesheet" href="assets/css/dropbox-webapp-style.css">
+		<style>
+			.buttonList span {margin: 1px 8px 1px 8px; }
+			.tabs-title>a {font-size: 1rem;}
+		</style>
+	</head>
+		
+	<body style="background-color:grey;">
+
+		<div id="title">
+			<h1>GameSolids Dropbox Webapp </h1>
+			<small class="text-right">( v0.68 )</small>
+		</div>
+
+		<ul class="tabs larger" data-tabs id="application-tabs">
+			<li class="tabs-title is-active"><a href="#dropboxUploader"><i class="fas fa-file-upload"> </i> Upload</a></li>
+			<li class="tabs-title"><a href="#dropboxDownloader" id="browserSelectTab"><i class="fas fa-hdd"> </i> Browse</a></li>
+		</ul>
+
+		<div class="tabs-content" data-tabs-content="application-tabs"">
+
+			<div class="tabs-panel content is-active" id="dropboxUploader">
+				<form method="POST" enctype="multipart/form-data" id="gsUploadFile">
+					<div class="row">
+						<div class="large-12 columns">
+							<label>What you gonna upload?
+								<input type="file" name="file" value="Pick a file" class="large-4 columns">
+							</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="large-12 columns">
+							<label>Where you gonna upload it?
+								<select name="path" class="large-4 columns">
+									<!-- TODO: make this dynamic list from API call -->
+									<option value="/" selected="selected" >/</option>
+									<option value="/concept/">Concept</option>
+									<option value="/project/">Project</option>
+									<option value="/working/">Working</option>
+								</select>
+							</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="large-4 columns">
+								<input type="submit" value="Upload" class="button float-right">
+						</div>
+					</div>
+				</form>
+				<br />
+				<br />
+				<br />
+			</div>
+
+			<div class="content tabs-panel" id="dropboxDownloader">
+				I'm a file browser. really.
+				<div id="browserContent">
+
+				</div>
+			</div>
+		</div> <!-- end tab content -->
+
+		<div id="inserter">
+			<table>
+				<tbody>
+					<tr>
+						<td>Upload Path: </td>
+						<td id="filePath"> /path/to/file.type </td>
+						<td class="buttonList">
+							<span data-tooltip title="Insert into wiki editor."><a href="#"><i class="fas fa-outdent fa-lg "></i></a></span>
+
+							<span data-tooltip title="Copy to clipboard."><a href="#"><i class="fas fa-clipboard fa-lg "></i></a></span>
+							<span data-tooltip title="Delete this file."><a href="#" style="color:red;"><i class="fas fa-trash-alt fa-lg "></i></a></span>
+						</td>
+					</tr>
+					<tr>
+						<td>Wiki Link: </td>
+						<td id="fileURL"> //modified/url/to/embed/file.type </td>
+						<td class="buttonList">
+							<span data-tooltip title="Insert into wiki editor."><a href="#"><i class="fas fa-outdent fa-lg "></i></a></span>
+							<span data-tooltip title="Copy to clipboard."><a href="#"><i class="fas fa-clipboard fa-lg "></i></a></span>
+							<span data-tooltip title="Download to your computer."><a href="#" download><i class="fas fa-file-download fa-lg "></i></a></span>
+						</td>
+					</tr>
+					<tr>
+						<td>Dropbox URL: </td>
+						<td id="originalURL"> //original/db/url/for/file.type </td>
+						<td class="buttonList">
+							<span data-tooltip title="Insert into wiki editor."><a href="#"><i class="fas fa-outdent fa-lg "></i></a></span>
+							<span data-tooltip title="Copy to clipboard."><a href="#"><i class="fas fa-clipboard fa-lg "></i></a></span>
+							<span data-tooltip title="View on Dropbox."><a href="#"><i class="fas fa-external-link-alt fa-lg "></i></a></span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+		</div>
+		
+		<div id="progress" class="row">
+			<div class="large-12 columns">
+				<div class="fa-2x" align="center" style="position:relative; left: -14px;">
+					<i class="fas fa-cog fa-spin-reverse" style="color: #534456;"></i>
+				</div>
+				<div class="fa-4x" align="center" style="position:relative; top:-44px; left: 10px;">
+					<i class="fas fa-cog fa-spin" style="color: #bbc;"></i>
+				</div>
+				<div align="center" id="status">Uploading...</div>
+			</div>
+		</div>
+
+		<script src="assets/js/vendor/jquery.js"></script>
+		<script src="assets/js/dropbox-webapp-script.js"></script>
+		<script src="assets/js/vendor/what-input.js"></script>
+		<script src="assets/js/vendor/foundation.min.js"></script>
+		<script src="assets/js/app.js"></script>
+	</body>
+</html>

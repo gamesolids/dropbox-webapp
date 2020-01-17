@@ -1,0 +1,9 @@
+/* oh the styles */
+#title h1,#title h2,#title h3,#title h4,#title h5,#title small { color: #eef; display:inline-block; width:100%; padding: 8px 0px 4px 12px; background:#140521; margin: 0px; }
+#title small { padding: 4px 12px 8px 12px !important; margin: 0px;}
+#browserContent .folder { margin: 0px auto; padding: 8px 12px 8px 12px; display:block; background-color: #ebe6e8; border: 1px solid #dcd; }
+#browserContent .file, #browserContent .package, #browserContent .text {  margin: 0px auto; padding: 8px 12px 8px 22px; background-color: ##ededed; border: 1px solid #ede;  }
+a, a:focus, .tabs-title>a,.tabs-title>a:focus, li>a, .tabs-title.is-active>a:focus, .tabs-title>a[aria-selected=true] {color: #52442a;}  .button, .button:focus {background-color:#52442a;}
+.tabs-title.is-active,.tabs-title.is-active>a:focus, .tabs-title>a[aria-selected=true], div.tabs-content {background: #d1d1d1;}
+.tabs, .tabs-title>a[aria-selected=false] {background: #a09da3;}
+html,body{height: auto; display: block; min-height: 100%}
