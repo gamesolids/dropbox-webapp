@@ -356,6 +356,65 @@ class webappBase
 
 	} // end getFolderContents
 
+
+	/**
+	 * returns the complete folder structure as list of paths
+	 * 
+	 * @return array An associaciative array with folder data or error information.
+	 */
+	public function getFolderList(  ) {
+
+		$response  = array('responseType' => '','response' => array('message' => '','content' => false, ), );
+
+		try {
+				// Creating Dropbox Folder
+				$result = $this->dropbox->listFolder( $folder, ['recursive' => true] );
+
+				//Fetch Items
+				$items = $result->getItems();
+
+				foreach ($items as $key => $value) {
+					if($value->getData()['.tag'] == "folder"){
+						$response['response']['content'][$key] = $value->getData();
+					}
+				}
+
+				//If more items are available
+				if ($result->hasMoreItems()) {
+				    //Fetch Cusrsor for listFolderContinue()
+				    $cursor = $result->getCursor();
+
+				    //Paginate through the remaining items
+				    $continueResult = $this->dropbox->listFolderContinue($cursor);
+				    $continueItems = $continueResult->getItems();
+
+					foreach ($continueItems as $key => $value) {
+						if($value->getData()['.tag'] == "folder"){
+							$response['response']['content'][$key] = $value->getData();
+						}
+					}
+				}
+
+				// if still good, build our response.
+				$response['responseType'] = 'success';
+				$response['response']['message'] = 'Folder contents found.';
+				// $response['response']['content'] = $result->getData();
+
+		} catch (\Exception $e) {
+
+				$data = $e->getMessage();
+
+				// if not still good, then build that response
+				$response['responseType'] = 'error';
+				$response['response']['message'] = 'There was a problem locating that file or folder.';
+				$response['response']['content'] = array('errorText' => $data, );
+		}
+
+		// and wha-la
+		return $response;
+
+	} // end getFolderContents
+
 	// TODO: duplicate, rename
 
 } // end class

@@ -16,6 +16,8 @@ class webappUploader {
 	}
 
 	
+
+
 	/**
 	 * Upload a file from POST data.
 	 * 
@@ -114,6 +116,53 @@ class webappUploader {
 
 
 
+	/**
+	 * Get full directory listing as path list.
+	 * 
+	 * @return array An associaciative array with file share data or error information.
+	 */
+	public function getFileList(){
+
+		// Check if file was uploaded
+		if (isset($_POST["path"])) {
+
+			$response  = array('responseType' => '','response' => array('message' => '','content' => false, ), );
+
+			try {
+
+				// Upload the file to Dropbox
+				$shareData = $this->dropbox->getFileList();
+
+				// if still good, build our response.
+				$response['responseType'] = 'success';
+				$response['response']['message'] = 'The file was retrieved successfully.';
+				$response['response']['content'] = array('dropboxResponse' => $shareData, );
+
+			} catch (\Exception $e) {
+
+				$data = $e->getMessage();
+
+				// if not still good, then build that response
+				$response['responseType'] = 'error';
+				$response['response']['message'] = 'There was a problem retrieving the list.';
+				$response['response']['content'] = array('errorText' => $data, );
+			
+			} // end try
+		} else {
+			// if no file was sent
+			$data = array( 'error_summary' => "file/not_found/", 'error' => array( '.tag' => "path", 'path' => array( '.tag' => "not_found", ), ), );
+
+			$response['responseType'] = 'error';
+			$response['response']['message'] = 'We received your request, but header was no data.';
+			$response['response']['content'] = array('errorText' => $data, );
+		
+		} // end if isset
+
+		return $response;
+	}
+
+
+
 	// quick test to check hiearchy
 	public function test($tpath){
 
@@ -146,5 +195,8 @@ if (isset($_POST["path"])) {
 	header('Content-Type: application/json');
 	echo json_encode($gsUpload -> getUploadShare());
 }
-
+if (isset($_POST['fileList'])) {
+	header('Content-Type: application/json');
+	echo json_encode($gsUpload -> getFileList());
+}
 ?>

@@ -265,6 +265,21 @@ function makeElement(fileObj, type, steps=0){
 }
 
 
+function getFolderList(){
+	$.post('webapp.base.php',{fileList:"fileList"}, function(data){
+					var files = data.response.content.dropboxResponse;
+					// for each item in the folder, make an element
+					for (var i = files.length - 1; i >= 0; i--) {
+						//var steps = .split("/").length-2;
+						// TODO: get item type from dropbox json
+						console.log(files[i].response.content.path_lower)
+						//makeElement(files[i], 'file',  steps );
+					}
+					// remove feedback
+					//$( '#progress' ).hide();
+				});
+}
+
 /* document functions */
 
 // Run startup scripts
@@ -273,6 +288,8 @@ $( document ).ready(function(){
 	$( '#progress' ).hide();
 	$( '#inserter' ).hide();
 	// load browser
+	getFolderList();
 	getAllFiles();
+
 
 });
