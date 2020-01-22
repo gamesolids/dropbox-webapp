@@ -121,17 +121,17 @@ class webappUploader {
 	 * 
 	 * @return array An associaciative array with file share data or error information.
 	 */
-	public function getFileList(){
+	public function getFolderList(){
 
 		// Check if file was uploaded
-		if (isset($_POST["path"])) {
+		if (isset($_POST["folderList"])) {
 
 			$response  = array('responseType' => '','response' => array('message' => '','content' => false, ), );
 
 			try {
 
 				// Upload the file to Dropbox
-				$shareData = $this->dropbox->getFileList();
+				$shareData = $this->dropbox->getFolderList();
 
 				// if still good, build our response.
 				$response['responseType'] = 'success';
@@ -195,8 +195,8 @@ if (isset($_POST["path"])) {
 	header('Content-Type: application/json');
 	echo json_encode($gsUpload -> getUploadShare());
 }
-if (isset($_POST['fileList'])) {
+if (isset($_POST['folderList'])) {
 	header('Content-Type: application/json');
-	echo json_encode($gsUpload -> getFileList());
+	echo json_encode($gsUpload -> getFolderList());
 }
 ?>

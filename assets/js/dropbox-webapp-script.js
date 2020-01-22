@@ -266,7 +266,7 @@ function makeElement(fileObj, type, steps=0){
 
 
 function getFolderList(){
-	$.post('webapp.base.php',{fileList:"fileList"}, function(data){
+	$.post('webapp.uploader.php',{folderList:"all"}, function(data){
 					var files = data.response.content.dropboxResponse;
 					// for each item in the folder, make an element
 					for (var i = files.length - 1; i >= 0; i--) {

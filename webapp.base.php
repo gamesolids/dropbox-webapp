@@ -368,7 +368,7 @@ class webappBase
 
 		try {
 				// Creating Dropbox Folder
-				$result = $this->dropbox->listFolder( $folder, ['recursive' => true] );
+				$result = $this->dropbox->listFolder( "", ['recursive' => true] );
 
 				//Fetch Items
 				$items = $result->getItems();
