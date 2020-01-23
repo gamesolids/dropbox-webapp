@@ -136,6 +136,7 @@ function getSharingInfo( shareFile, forceActive=false ){
 	});
 }
 
+// this works because 'folder' is alphabetically greater than 'file'
 function compare( a, b ) {
   if ( a.response.content['.tag'] > b.response.content['.tag'] ){
     return 1;
@@ -289,16 +290,18 @@ function makeElement(fileObj, type, steps=0){
 
 function getFolderList(){
 	$.post('webapp.uploader.php',{folderList:"all"}, function(data){
-		var files = data.response.content.dropboxResponse.response.content;
-		// for each folder, make an element
-		for (var i = files.length - 1; i >= 0; i--) {
-			//var steps = .split("/").length-2;
-			// TODO: get item type from dropbox json
-			console.log(files[i].path_lower)
-			//makeElement(files[i], 'file',  steps );
+
+		var folderList = data.response.content.dropboxResponse.response.content;
+		var selected =  "";
+		var selectOption = "<option value\"/\" selected=\"selected\">root</option>";
+		for (var i = 0; i < folderList.length; i++) {
+			selectOption += "<option value=\""+folderList[i].path_lower+"\">"+folderList[i].path_display+"</option>";
 		}
-		// remove feedback
-		//$( '#progress' ).hide();
+		//
+
+		$('[data-dynamic-list-folders]').each(function(){
+			$(this).empty().append(selectOption);
+		});
 	});
 }
 
@@ -310,7 +313,9 @@ $( document ).ready(function(){
 	$( '#progress' ).hide();
 	$( '#inserter' ).hide();
 	// load browser
-	//getFolderList();
+	
+		getFolderList();
+
 	getAllFiles();
 
 

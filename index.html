@@ -8,51 +8,95 @@
 		<link rel="stylesheet" href="assets/css/all.min.css">
 		<link rel="stylesheet" href="assets/css/foundation.min.css">
 		<link rel="stylesheet" href="assets/css/dropbox-webapp-style.css">
+		<link href="https://fonts.googleapis.com/css?family=Archivo&display=swap" rel="stylesheet">
 		<style>
+			html,body,p,div,a,h1,h2,h3,h4,h5,h6{font-family: 'Archivo', sans-serif;}
 			.buttonList span {margin: 1px 8px 1px 8px; }
 			.tabs-title>a {font-size: 1rem;}
 		</style>
 	</head>
-		
 	<body style="background-color:grey;">
-
-		<div id="title">
-			<h1>GameSolids Dropbox Webapp </h1>
-			<small class="text-right">( v0.68 )</small>
+		<div class="clearfix">
+			<span style="position: absolute; top:12px; right: 20px; color: lightgray; font-size: 0.8rem;">( v0.74 )</span>
+			<div id="title">
+				<h5><img src="https://gamesolids.com/gs.64.png" width="46" alt="logo"/>   Dropbox Webapp </h5>
+			</div>
 		</div>
-
-		<ul class="tabs larger" data-tabs id="application-tabs">
-			<li class="tabs-title is-active"><a href="#dropboxUploader"><i class="fas fa-file-upload"> </i> Upload</a></li>
-			<li class="tabs-title"><a href="#dropboxDownloader" id="browserSelectTab"><i class="fas fa-hdd"> </i> Browse</a></li>
+		<ul class="tabs text-right" data-tabs id="application-tabs">
+			<li class="tabs-title is-active"><a href="#dropboxDownloader" id="browserSelectTab"><i class="fas fa-hdd"> </i> Browse All</a></li>
+			<li class="tabs-title float-right"><a href="#dropboxDeleteFolder"><i class="fas fa-minus-circle"> </i> Delete Folder</a></li>
+			<li class="tabs-title float-right"><a href="#dropboxMoveFolder"><i class="fas fa-truck-moving"> </i> Move Folder</a></li>
+			<li class="tabs-title float-right"><a href="#dropboxNewFolder"><i class="fas fa-folder-plus"> </i> New Folder</a></li>
+			<li class="tabs-title float-right"><a href="#dropboxUploader"><i class="fas fa-file-upload"> </i> Upload File</a></li>
 		</ul>
+		<div class="tabs-content" data-tabs-content="application-tabs">
+			<div class="content tabs-panel is-active row" id="dropboxDownloader">
+				<div class="grid-x">
+					<div class="cell">
+						/ root folder
+						<div id="browserContent">
 
-		<div class="tabs-content" data-tabs-content="application-tabs"">
-
-			<div class="tabs-panel content is-active" id="dropboxUploader">
+						</div>
+					</div>
+				</div>
+				<div class="grid-x">
+					<div class="cell">
+						<div id="inserter" >
+							<table>
+								<tbody>
+									<tr>
+										<td>Location: </td>
+										<td id="filePath"> /path/to/file.type </td>
+										<td class="buttonList">
+											<span data-tooltip title="Rename File."><a href="#"><i class="fas fa-edit fa-lg "></i></a></span>
+											<span data-tooltip title="Move file to new location."><a href="#"><i class="fas fa-truck-moving fa-lg "></i></a></span>
+											<span data-tooltip title="Delete this file."><a href="#" style="color:red;"><i class="fas fa-trash-alt fa-lg "></i></a></span>
+										</td>
+									</tr>
+									<tr>
+										<td>Embed Link: </td>
+										<td id="fileURL"> //modified/url/to/embed/file.type </td>
+										<td class="buttonList">
+											<span data-tooltip title="Insert into wiki editor."><a href="#"><i class="fas fa-outdent fa-lg "></i></a></span>
+											<span data-tooltip title="Copy embed URL to clipboard."><a href="#"><i class="fas fa-clipboard fa-lg "></i></a></span>
+											<span data-tooltip title="Download to your computer."><a href="#" download><i class="fas fa-file-download fa-lg "></i></a></span>
+										</td>
+									</tr>
+									<tr>
+										<td>Dropbox URL: </td>
+										<td id="originalURL"> //original/db/url/for/file.type </td>
+										<td class="buttonList">
+											<span data-tooltip title="Copy Dopbox link to clipboard."><a href="#"><i class="fas fa-clipboard fa-lg "></i></a></span>
+											<span data-tooltip title="View on Dropbox."><a href="#" target="_blank"><i class="fas fa-external-link-alt fa-lg "></i></a></span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="tabs-panel content" id="dropboxUploader">
 				<form method="POST" enctype="multipart/form-data" id="gsUploadFile">
-					<div class="row">
-						<div class="large-12 columns">
+					<div class="grid-x">
+						<div class="cell">
 							<label>What you gonna upload?
-								<input type="file" name="file" value="Pick a file" class="large-4 columns">
+								<input type="file" name="file" value="Pick a file">
 							</label>
 						</div>
 					</div>
-					<div class="row">
-						<div class="large-12 columns">
+					<div class="grid-x">
+						<div class="cell">
 							<label>Where you gonna upload it?
-								<select name="path" class="large-4 columns">
-									<!-- TODO: make this dynamic list from API call -->
-									<option value="/" selected="selected" >/</option>
-									<option value="/concept/">Concept</option>
-									<option value="/project/">Project</option>
-									<option value="/working/">Working</option>
+								<select name="path" data-dynamic-list-folders>
+									<!-- filled by API call -->
 								</select>
 							</label>
 						</div>
 					</div>
-					<div class="row">
-						<div class="large-4 columns">
-								<input type="submit" value="Upload" class="button float-right">
+					<div class="grid-x">
+						<div class="cell">
+							<input type="submit" value="Upload" class="button float-right">
 						</div>
 					</div>
 				</form>
@@ -60,63 +104,96 @@
 				<br />
 				<br />
 			</div>
+			<div class="tabs-panel content" id="dropboxNewFolder">
+				<form method="POST" enctype="multipart/form-data" id="gsNewFolder">
+					<div class="grid-x">
+						<div class="cell">
+							<label>Where to create the folder
+								<select name="path" data-dynamic-list-folders>
+									<!-- filled by API call -->
+								</select>
+							</label>
+						</div>
+					</div>
+					<div class="grid-x">
+						<div class="cell">
+							<label>Folder Name
+								<input type="text" name="folderName" title="New Folder">
+							</label>
+						</div>
+					</div>
+					<div class="grid-x">
+						<div class="cell">
+							<input type="submit" value="Create New Folder" class="button float-right">
+						</div>
+					</div>
+				</form>
+				<br />
+				<br />
+				<br />
+			</div>
+			<div class="tabs-panel content" id="dropboxMoveFolder">
+				<form method="POST" enctype="multipart/form-data" id="gsMoveFolder">
+					<div class="grid-x">
+						<div class="cell">
+							<label>Where would you like to move the folder to?
+								<select name="moveFolder" data-dynamic-list-folders>
+									<!-- filled by API call -->
+								</select>
+							</label>
+						</div>
+					</div>
+					<div class="grid-x">
+						<div class="cell">
+							<input type="submit" value="Move Folder" class="button float-right">
+						</div>
+					</div>
+				</form>
+				<br />
+				<br />
+				<br />
+			</div>
+			<div class="tabs-panel content" id="dropboxDeleteFolder">
+				<form method="POST" enctype="multipart/form-data" id="gsDeleteFolder">
+					<div class="grid-x">
+						<div class="cell">
+							<div class="callout alert">
+								<label>Are you <i>sure</i> you want to <b>delete this folder</b> <i>and</i> its contents?<br />
+									Please type the full path of the folder you want to delete.
+									<input type="text" name="folder" value="/path/to/folder" >
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="grid-x">
+						<div class="cell">
+							<input type="submit" value="Delete Folder" class="button float-right">
+						
+					</div>
+					</div>
+				</form>
+				<br />
+				<br />
+				<br />
+			</div>
 
-			<div class="content tabs-panel" id="dropboxDownloader">
-				I'm a file browser. really.
-				<div id="browserContent">
-
+			<div id="progress" class="grid-x">
+				<div class="cell text-center">
+					<div style="position:relative; left: -14px;">
+						<i class="fas fa-cog fa-spin-reverse" style="color: #534456;"></i>
+					</div>
+					<div class="fa-2x" style="position:relative; top:-24px; left: 1px;">
+						<i class="fas fa-cog fa-spin" style="color: #bbc;"></i>
+					</div>
+					<div id="status">Uploading...</div>
 				</div>
 			</div>
+
+			<br />
+			<br />
 		</div> <!-- end tab content -->
-
-		<div id="inserter">
-			<table>
-				<tbody>
-					<tr>
-						<td>Upload Path: </td>
-						<td id="filePath"> /path/to/file.type </td>
-						<td class="buttonList">
-							<span data-tooltip title="Insert into wiki editor."><a href="#"><i class="fas fa-outdent fa-lg "></i></a></span>
-
-							<span data-tooltip title="Copy to clipboard."><a href="#"><i class="fas fa-clipboard fa-lg "></i></a></span>
-							<span data-tooltip title="Delete this file."><a href="#" style="color:red;"><i class="fas fa-trash-alt fa-lg "></i></a></span>
-						</td>
-					</tr>
-					<tr>
-						<td>Wiki Link: </td>
-						<td id="fileURL"> //modified/url/to/embed/file.type </td>
-						<td class="buttonList">
-							<span data-tooltip title="Insert into wiki editor."><a href="#"><i class="fas fa-outdent fa-lg "></i></a></span>
-							<span data-tooltip title="Copy to clipboard."><a href="#"><i class="fas fa-clipboard fa-lg "></i></a></span>
-							<span data-tooltip title="Download to your computer."><a href="#" download><i class="fas fa-file-download fa-lg "></i></a></span>
-						</td>
-					</tr>
-					<tr>
-						<td>Dropbox URL: </td>
-						<td id="originalURL"> //original/db/url/for/file.type </td>
-						<td class="buttonList">
-							<span data-tooltip title="Insert into wiki editor."><a href="#"><i class="fas fa-outdent fa-lg "></i></a></span>
-							<span data-tooltip title="Copy to clipboard."><a href="#"><i class="fas fa-clipboard fa-lg "></i></a></span>
-							<span data-tooltip title="View on Dropbox."><a href="#"><i class="fas fa-external-link-alt fa-lg "></i></a></span>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-
-		</div>
-		
-		<div id="progress" class="row">
-			<div class="large-12 columns">
-				<div class="fa-2x" align="center" style="position:relative; left: -14px;">
-					<i class="fas fa-cog fa-spin-reverse" style="color: #534456;"></i>
-				</div>
-				<div class="fa-4x" align="center" style="position:relative; top:-44px; left: 10px;">
-					<i class="fas fa-cog fa-spin" style="color: #bbc;"></i>
-				</div>
-				<div align="center" id="status">Uploading...</div>
-			</div>
-		</div>
-
+		<br />
+		<br />
 		<script src="assets/js/vendor/jquery.js"></script>
 		<script src="assets/js/dropbox-webapp-script.js"></script>
 		<script src="assets/js/vendor/what-input.js"></script>
