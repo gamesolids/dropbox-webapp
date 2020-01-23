@@ -136,6 +136,17 @@ function getSharingInfo( shareFile, forceActive=false ){
 	});
 }
 
+function compare( a, b ) {
+  if ( a.response.content['.tag'] > b.response.content['.tag'] ){
+    return 1;
+  }
+  if ( a.response.content['.tag'] < b.response.content['.tag'] ){
+    return -1;
+  }
+  return 0;
+}
+
+
 // get all files in a given folder path.
 // TODO: pass 'iterative' bool to get all files
 function getAllFiles(){
@@ -154,6 +165,7 @@ function getAllFiles(){
 			console.log(m);
 		}
 	}); 
+
 	// with the result of path request:
 	getting.done(function( data ) {
 		// remove progress
@@ -163,6 +175,8 @@ function getAllFiles(){
 		// clear list
 		$( '#browserContent' ).empty();
 		var content = data.response.content.dropboxResponse;
+		// sort by type
+		content.sort( compare );
 		// make a link element for each file/folder type
 		for(var i=0; i<content.length; i++){
 			var steps = content[i].response.content.path_lower.split("/").length-2;
@@ -173,7 +187,9 @@ function getAllFiles(){
 				makeElement( content[i], 'file', steps );
 			}
 		}
-		// lodad event listeners here, so we don't have to re-load for each new DOM item
+
+
+		// load event listeners here, so we don't have to re-load for each new DOM item
 		// setup folder click events
 		$('#browserContent').on('click', '[data-filetype="folder"]', function(clicker){
 			// find `div` following the clicked link, and hide or show it's content.
@@ -187,11 +203,17 @@ function getAllFiles(){
 				var pathFromID = $(clicker.target.parentNode).attr('id').replaceAll("-_-","/");
 				$.post('webapp.browser.php',{get:"allFiles", path:pathFromID}, function(data){
 					var files = data.response.content.dropboxResponse;
+					// sort by type
+					files.sort( compare );
 					// for each item in the folder, make an element
 					for (var i = files.length - 1; i >= 0; i--) {
 						var steps = files[i].response.content.path_lower.split("/").length-2;
-						// TODO: get item type from dropbox json
-						makeElement(files[i], 'file',  steps );
+						// Swap icon based on file type
+						if( files[i].response.content['.tag'] == "folder" ){
+							makeElement(files[i], 'folder',  steps );
+						}else{
+							makeElement(files[i], 'file',  steps );
+						}
 					}
 					// remove feedback
 					$( '#progress' ).hide();
@@ -267,17 +289,17 @@ function makeElement(fileObj, type, steps=0){
 
 function getFolderList(){
 	$.post('webapp.uploader.php',{folderList:"all"}, function(data){
-					var files = data.response.content.dropboxResponse;
-					// for each item in the folder, make an element
-					for (var i = files.length - 1; i >= 0; i--) {
-						//var steps = .split("/").length-2;
-						// TODO: get item type from dropbox json
-						console.log(files[i].response.content.path_lower)
-						//makeElement(files[i], 'file',  steps );
-					}
-					// remove feedback
-					//$( '#progress' ).hide();
-				});
+		var files = data.response.content.dropboxResponse.response.content;
+		// for each folder, make an element
+		for (var i = files.length - 1; i >= 0; i--) {
+			//var steps = .split("/").length-2;
+			// TODO: get item type from dropbox json
+			console.log(files[i].path_lower)
+			//makeElement(files[i], 'file',  steps );
+		}
+		// remove feedback
+		//$( '#progress' ).hide();
+	});
 }
 
 /* document functions */
@@ -288,7 +310,7 @@ $( document ).ready(function(){
 	$( '#progress' ).hide();
 	$( '#inserter' ).hide();
 	// load browser
-	getFolderList();
+	//getFolderList();
 	getAllFiles();
 
 
