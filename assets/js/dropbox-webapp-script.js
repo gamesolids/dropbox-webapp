@@ -287,18 +287,19 @@ function makeElement(fileObj, type, steps=0){
 
 }
 
-
+// finds all [data-dynamic-list-folders] <select> elements and
+// fills <option>'s containing folder info.
 function getFolderList(){
 	$.post('webapp.uploader.php',{folderList:"all"}, function(data){
-
+		// get our content node
 		var folderList = data.response.content.dropboxResponse.response.content;
-		var selected =  "";
+		// set first option as root
 		var selectOption = "<option value\"/\" selected=\"selected\">root</option>";
+		// and get rest of folders
 		for (var i = 0; i < folderList.length; i++) {
 			selectOption += "<option value=\""+folderList[i].path_lower+"\">"+folderList[i].path_display+"</option>";
 		}
-		//
-
+		// populate the <select> elements
 		$('[data-dynamic-list-folders]').each(function(){
 			$(this).empty().append(selectOption);
 		});
@@ -306,17 +307,13 @@ function getFolderList(){
 }
 
 /* document functions */
-
 // Run startup scripts
 $( document ).ready(function(){
 	// hide utilities
 	$( '#progress' ).hide();
 	$( '#inserter' ).hide();
-	// load browser
-	
-		getFolderList();
-
+	// fill form fields
+	getFolderList();
+	// load browser level 0
 	getAllFiles();
-
-
 });
