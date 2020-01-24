@@ -24,6 +24,7 @@
 		</div>
 		<ul class="tabs text-right" data-tabs id="application-tabs">
 			<li class="tabs-title is-active"><a href="#dropboxDownloader" id="browserSelectTab"><i class="fas fa-hdd"> </i> Browse All</a></li>
+			<li class="tabs-title" data-tooltip title="Reload all folders." ><a href="#browserRefresh" id="browserRefresh" ><i class="fas fa-redo"> </i></a></li>
 			<li class="tabs-title float-right"><a href="#dropboxDeleteFolder"><i class="fas fa-minus-circle"> </i> Delete Folder</a></li>
 			<li class="tabs-title float-right"><a href="#dropboxMoveFolder"><i class="fas fa-truck-moving"> </i> Move Folder</a></li>
 			<li class="tabs-title float-right"><a href="#dropboxNewFolder"><i class="fas fa-folder-plus"> </i> New Folder</a></li>
@@ -35,7 +36,7 @@
 					<div class="cell">
 						/ root folder
 						<div id="browserContent">
-
+							<!-- populated by API call -->
 						</div>
 					</div>
 				</div>
@@ -81,14 +82,14 @@
 					<div class="grid-x">
 						<div class="cell">
 							<label>What you gonna upload?
-								<input type="file" name="file" value="Pick a file">
+								<input type="file" name="uploadFile" value="Pick a file">
 							</label>
 						</div>
 					</div>
 					<div class="grid-x">
 						<div class="cell">
 							<label>Where you gonna upload it?
-								<select name="path" data-dynamic-list-folders>
+								<select name="uploadPath" data-dynamic-list-folders>
 									<!-- filled by API call -->
 								</select>
 							</label>
@@ -109,7 +110,7 @@
 					<div class="grid-x">
 						<div class="cell">
 							<label>Where to create the folder
-								<select name="path" data-dynamic-list-folders>
+								<select name="newFolderPath" data-dynamic-list-folders>
 									<!-- filled by API call -->
 								</select>
 							</label>
@@ -118,7 +119,7 @@
 					<div class="grid-x">
 						<div class="cell">
 							<label>Folder Name
-								<input type="text" name="folderName" title="New Folder">
+								<input type="text" name="newFolderName" title="New Folder">
 							</label>
 						</div>
 					</div>
@@ -135,17 +136,30 @@
 			<div class="tabs-panel content" id="dropboxMoveFolder">
 				<form method="POST" enctype="multipart/form-data" id="gsMoveFolder">
 					<div class="grid-x">
-						<div class="cell">
+						<div class="cell medium-6 grid-padding-x">
+							<label>Which folder would you like to move?
+								<select name="moveFolderOldPath" data-dynamic-list-folders data-path-move placeholder="root">
+									<!-- filled by API call -->
+								</select>
+							</label>
+						</div>
+						<div class="cell medium-6 grid-padding-x">
 							<label>Where would you like to move the folder to?
-								<select name="moveFolder" data-dynamic-list-folders>
+								<select name="moveFolderNewPath" data-dynamic-list-folders data-path-move placeholder="root">
 									<!-- filled by API call -->
 								</select>
 							</label>
 						</div>
 					</div>
 					<div class="grid-x">
+						<div class="cell text-center">
+							The new path will be: <br />
+							<div id="moveFileResult">/new/path/to/old-folder</div>
+						</div>
+					</div>
+					<div class="grid-x">
 						<div class="cell">
-							<input type="submit" value="Move Folder" class="button float-right">
+							<button type="button" class="button float-right">Move Folder</button>
 						</div>
 					</div>
 				</form>
@@ -160,17 +174,28 @@
 							<div class="callout alert">
 								<label>Are you <i>sure</i> you want to <b>delete this folder</b> <i>and</i> its contents?<br />
 									Please type the full path of the folder you want to delete.
-									<input type="text" name="folder" value="/path/to/folder" >
+									<input type="text" name="deleteFolderPath" value="/path/to/folder" >
 								</label>
 							</div>
 						</div>
 					</div>
 					<div class="grid-x">
 						<div class="cell">
-							<input type="submit" value="Delete Folder" class="button float-right">
-						
+							<div class="reveal callout alert" id="exampleModal1" data-reveal>
+								<h1><i class="far fa-surprise"></i>MFG!</h1>
+								<p class="lead" id="deleteConfirm">You're really gonna do it. </p>
+								<!-- Thanks to: https://stackoverflow.com/a/23456905/647485 only need to hide the label. -->
+								<!-- Actionable submit button stays hidden near bottom of form. -->
+								<label for="deleteFolderSubmit" tabindex="0" class="button float-center">Delete</label>
+								<button class="close-button" data-close aria-label="Close modal" type="button">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<a class="button float-right" data-open="exampleModal1" href="#" >Delete Folder</a>
+						</div>
 					</div>
-					</div>
+					<!-- Hidden submit button with label defined up above. -->
+					<input type="submit" value="Delete Folder" class="button float-center" id="deleteFolderSubmit" style="visibility:hidden;">
 				</form>
 				<br />
 				<br />

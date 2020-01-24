@@ -1,7 +1,7 @@
 /* support functions */
 
 // Let's make replace() more useful 
-String.prototype.replaceAll = function(search, replacement) {
+String.prototype.replaceAll = function( search, replacement ) {
     return this.split(search).join(replacement);
 };
 // append, copy, remove hack for getting text
@@ -15,7 +15,7 @@ String.prototype.copyToClipboard = function() {
 	document.body.removeChild(el);
 };
 // also make global for ease of use
-function copyToClipboard(value){
+function copyToClipboard( value ){
 	//console.log(value);
 	value.copyToClipboard();
 }	
@@ -38,8 +38,129 @@ function jsonMatch ( obj, key ) {
 
 /* UI functions */
 
+$( '#browserRefresh' ).click(function( t ){
+	getAllFiles();
+})
+
 // Upload form handler
-$( "#gsUploadFile" ).submit(function( event ) {
+$( '#gsUploadFile' ).submit(function( event ) {
+
+	// Stop form from submitting normally
+	event.preventDefault();
+	// hide the form, show spinning cogs
+	$( this ).hide();
+	$( '#progress' ).show();
+	// Collect form data and POST to uploader.
+	var posting = $.ajax( {
+		url : 'webapp.uploader.php',
+	    type: 'POST',
+	    data: new FormData( this ),
+	    processData: false,
+	    contentType: false, // jquery bug: can't use multipart/form-data.
+	    beforeSend: function( data ){
+			$( '#status' ).empty().append("Uploading...");
+		},success: function( data ){
+			$( '#status' ).empty().append("Complete.");
+			$( '#progress' ).hide();
+		}
+	}); 
+	// Once the file is successfully in dropbox:
+	posting.done(function( data ) {
+		// request that a share link be made
+		var file = data.response.content.dropboxResponse.response.content.file;
+		getSharingInfo( file.path_lower, true );
+		// feedback
+		$( '#filePath' ).empty().append( file.path_display );
+		$( '#gsUploadFile' ).trigger( 'reset' ).show();
+	});
+});
+
+
+// New folder from user
+$( '#gsNewFolder' ).submit(function( event ) {
+
+	// Stop form from submitting normally
+	event.preventDefault();
+	// hide the form, show spinning cogs
+	$( this ).hide();
+	$( '#progress' ).show();
+	// Collect form data and POST to uploader.
+	var posting = $.ajax( {
+		url : 'webapp.uploader.php',
+	    type: 'POST',
+	    data: new FormData( this ),
+	    processData: false,
+	    contentType: false, // jquery bug: can't use multipart/form-data.
+	    beforeSend: function( data ){
+			$( '#status' ).empty().append("Checking path...");
+		},success: function( data ){
+			$( '#status' ).empty().append("Complete.");
+			$( '#progress' ).hide();
+		}
+	}); 
+	// Once the folder is successfully in dropbox:
+	posting.done(function( data ) {
+		$( '#gsNewFolder' ).trigger( 'reset' ).show();
+	});
+});
+
+// Move folder to new home
+$( '#gsMoveFolder' ).submit(function( event ) {
+
+	// Stop form from submitting normally
+	event.preventDefault();
+	// hide the form, show spinning cogs
+	$( this ).hide();
+	$( '#progress' ).show();
+	// Collect form data and POST to uploader.
+	var posting = $.ajax( {
+		url : 'webapp.uploader.php',
+	    type: 'POST',
+	    data: new FormData( this ),
+	    processData: false,
+	    contentType: false, // jquery bug: can't use multipart/form-data.
+	    beforeSend: function( data ){
+			$( '#status' ).empty().append("Moving folder...");
+		},success: function( data ){
+			$( '#status' ).empty().append("Complete.");
+			$( '#progress' ).hide();
+		}
+	}); 
+	// Once the folder is successfully in dropbox:
+	posting.done(function( data ) {
+		$( '#gsMoveFolder' ).trigger( 'reset' ).show();
+	});
+});
+
+// path updaters for user
+var newPath = [ "", "" ];
+$( '[data-path-move]' ).change(function( result ) {
+	// get the name of the folder only
+	var r = result.target;
+	if ( r.name == "moveFolderOldPath" ){
+		var t = r.value.split("/");
+		console.log("t: "+t);
+		newPath[1] = t[t.length-1];
+	}
+	if ( r.name == "moveFolderNewPath" ){
+		newPath[0] = r.value;
+	}
+	var bnewp = newPath.join("/");
+	// create new path
+	$( '#moveFileResult' ).empty().append( bnewp );
+});
+//target: select
+//name: "moveFolderOldPath"
+//value: "/working/TestFolder/TestFolder2"
+
+// disable enter key on submit
+var deleteFlag = false;
+$( '#gsDeleteFolder input[type="submit"]' ).on('keypress', function(e) {
+	if( !deleteFlag ) return e.which !== 13;
+});
+
+// Upload form handler
+$( '#gsDeleteFolder' ).submit(function( event ) {
 
 	// Stop form from submitting normally
 	event.preventDefault();
@@ -55,22 +176,17 @@ $( "#gsUploadFile" ).submit(function( event ) {
 	    data: new FormData( this ),
 	    processData: false,
 	    contentType: false, // jquery bug: can't use multipart/form-data.
-	    beforeSend: function( data){
-			$('#status').empty().append("Uploading...");
-		},success: function( data){
-			$('#status').empty().append("Complete.");
+	    beforeSend: function( data ){
+			$( '#status' ).empty().append("Attempting removal...");
+		},success: function( data ){
+			$( '#status' ).empty().append("Complete.");
 			$( '#progress' ).hide();
 		}
 	}); 
 
-	// Once the file is successfully in dropbox:
+	// Once the file is successfully removed from dropbox:
 	posting.done(function( data ) {
-		// request that a share link be made
-		var file = data.response.content.dropboxResponse.response.content.file;
-		getSharingInfo( file.path_lower, true );
-		// feedback
-		$( '#filePath' ).empty().append( file.path_display );
-		$( '#gsUploadFile' ).trigger( 'reset' ).show();
+		$( '#gsNewFolder' ).trigger( 'reset' ).show();
 	});
 });
 
@@ -81,52 +197,52 @@ $( "#gsUploadFile" ).submit(function( event ) {
 function getSharingInfo( shareFile, forceActive=false ){
 
 	// update feedback screen
-	$('#status').empty().append("Configuring sharing info...");
+	$( '#status' ).empty().append("Configuring sharing info...");
 	$( '#progress' ).show();
 	
 	// collect the file path and post for share request
 	var posting = $.ajax( {
 		url : 'webapp.uploader.php',
 	    type: 'POST',
-	    data: { path: shareFile },
-	    beforeSend: function( data){
-			$('#status').empty().append("Processing share data...");
-		},success: function( data){
-			$('#status').empty().append("Complete.");
+	    data: { sharePath: shareFile },
+	    beforeSend: function( data ){
+			$( '#status' ).empty().append("Processing share data...");
+		},success: function( data ){
+			$( '#status' ).empty().append("Complete.");
 			$( '#progress' ).hide();
 		}
 	}); 
 
 	// Once the share is succesfully created:
 	posting.done(function( data ) {
-		$( "#progress" ).hide();
-		$( "#inserter" ).show();
+		$( '#progress' ).hide();
+		$( '#inserter' ).show();
 		// find url burried in the response
 		var content = data.response.content.dropboxResponse.response.content.sharingInfo.url;
 		// make wiki usable link
 		var embedLink = content.replace("www","dl") + "&i=i.png";
 		// update html 
-		$( "#fileURL" ).empty().append( embedLink );
-		$( "#originalURL" ).empty().append( content );
+		$( '#fileURL' ).empty().append( embedLink );
+		$( '#originalURL' ).empty().append( content );
 
 		// get the text in previous tablecell and store to clipboard
-		$('#inserter .fa-clipboard').click(function(clicker){
-			var actionElement = $('td', $(this).closest('tr')).eq(1).text();
+		$( '#inserter .fa-clipboard' ).click(function( clicker ){
+			var actionElement = $('td', $( this ).closest('tr')).eq(1).text();
 			copyToClipboard(actionElement);
 		});
 		// load the dropbox url
 		var vtxt = $( 'td', $('#inserter .fa-external-link-alt').closest('tr') ).eq(1).text();
-		$('#inserter .fa-external-link-alt').parent().attr('href', vtxt);
+		$( '#inserter .fa-external-link-alt').parent().attr('href', vtxt);
 
 		// load file link with download command
-		$('#inserter .fa-file-download').parent().attr('href', content.replace("dl=0","dl=1") );
+		$( '#inserter .fa-file-download').parent().attr('href', content.replace("dl=0","dl=1") );
 		
 		// if opened from media wiki editor: add insert function.
 		if(window.opener == null || window.opener == false ){
-			$("#insertOptions").hide();
-			$('span:first',$('.buttonList ')).hide();
+			$( '#insertOptions' ).hide();
+			$( 'span:first', $('.buttonList ')).hide();
 		}else{
-			$( "#inserter" ).click(function(){
+			$( '#inserter' ).click(function(){
 				// caretInsert is defined in `MediaWiki:Common.js`
 				window.opener.caretInsert( embedLink );
 				window.close();
@@ -152,7 +268,7 @@ function compare( a, b ) {
 // TODO: pass 'iterative' bool to get all files
 function getAllFiles(){
 
-	$('#status').empty().append("Retrieving file list...");
+	$( '#status' ).empty().append("Retrieving file list...");
 	$( '#progress' ).show();
 	
 	// Get some values from elements on the page:
@@ -192,7 +308,7 @@ function getAllFiles(){
 
 		// load event listeners here, so we don't have to re-load for each new DOM item
 		// setup folder click events
-		$('#browserContent').on('click', '[data-filetype="folder"]', function(clicker){
+		$( '#browserContent' ).on('click', '[data-filetype="folder"]', function( clicker ){
 			// find `div` following the clicked link, and hide or show it's content.
 			var activeTarget = $(clicker.target.parentNode).find('div');
 			// check if we requested data for this folder yet...
@@ -202,7 +318,7 @@ function getAllFiles(){
 				$( '#progress' ).show();
 				// if not, then make the call
 				var pathFromID = $(clicker.target.parentNode).attr('id').replaceAll("-_-","/");
-				$.post('webapp.browser.php',{get:"allFiles", path:pathFromID}, function(data){
+				$.post('webapp.browser.php',{get:"allFiles", path:pathFromID}, function( data ){
 					var files = data.response.content.dropboxResponse;
 					// sort by type
 					files.sort( compare );
@@ -227,7 +343,7 @@ function getAllFiles(){
 		});
 
 		// setup file click events (file = every filetype not a folder)
-		$('#browserContent').on('click', '[data-filetype][data-filetype!="folder"]', function(clicker){
+		$( '#browserContent' ).on('click', '[data-filetype][data-filetype!="folder"]', function( clicker ){
 			// turn id into search path
 			var pathFromID = $(clicker.target.parentNode).attr('id').replaceAll("-_-","/");
 			getSharingInfo( pathFromID, false );
@@ -235,7 +351,7 @@ function getAllFiles(){
 		});
 		
 		// setup clipboard copy event
-		$('#browserContent').on('click', '.clipper', function(){
+		$( '#browserContent' ).on('click', '.clipper', function(){
 			copyToClipboard($(this).attr("data-url"));
 		});
 		
@@ -245,7 +361,7 @@ function getAllFiles(){
 }
 
 // a factory for making purty lil DOM compliant UI elements and actions.
-function makeElement(fileObj, type, steps=0){
+function makeElement( fileObj, type, steps=0 ){
 	// set display icon based on type
 	var icon;
 	switch(type) {
@@ -290,17 +406,17 @@ function makeElement(fileObj, type, steps=0){
 // finds all [data-dynamic-list-folders] <select> elements and
 // fills <option>'s containing folder info.
 function getFolderList(){
-	$.post('webapp.uploader.php',{folderList:"all"}, function(data){
+	$.post( 'webapp.uploader.php', {folderList:"all"}, function( data ){
 		// get our content node
 		var folderList = data.response.content.dropboxResponse.response.content;
 		// set first option as root
-		var selectOption = "<option value\"/\" selected=\"selected\">root</option>";
+		var selectOption = "<option value\"/\" selected=\"selected\">/</option>";
 		// and get rest of folders
 		for (var i = 0; i < folderList.length; i++) {
-			selectOption += "<option value=\""+folderList[i].path_lower+"\">"+folderList[i].path_display+"</option>";
+			selectOption += "<option value=\""+folderList[i].path_display+"\">"+folderList[i].path_display+"</option>";
 		}
 		// populate the <select> elements
-		$('[data-dynamic-list-folders]').each(function(){
+		$( '[data-dynamic-list-folders]' ).each(function(){
 			$(this).empty().append(selectOption);
 		});
 	});

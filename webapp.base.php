@@ -75,7 +75,7 @@ class webappBase
 				$dropboxFile = new DropboxFile($file['path']);
 
 				// Uploading the file to Dropbox
-				$uploadedFile = $this->dropbox->upload($dropboxFile, $destination . $file['name'], ['autorename' => true]);
+				$uploadedFile = $this->dropbox->upload($dropboxFile, $destination .'/'. $file['name'], ['autorename' => true]);
 
 				// if still good, build our response.
 				$response['responseType'] = 'success';
@@ -233,7 +233,7 @@ class webappBase
 	/**
 	 * delete dropbox file
 	 * 
-	 * @param string $file The folder you want to get data on
+	 * @param string $file The folder you want to remove
 	 * @return array An associaciative array with folder data or error information.
 	 */
 	public function deleteFile( $file ) {
@@ -268,7 +268,7 @@ class webappBase
 	/**
 	 * move a dropbox file
 	 * 
-	 * @param string $file The folder you want to get data on
+	 * @param string $file The folder you want to move
 	 * @param string $destination The folder you want land in
 	 * @return array An associaciative array with folder data or error information.
 	 */
