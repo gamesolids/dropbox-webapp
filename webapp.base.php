@@ -113,6 +113,7 @@ class webappBase
 		$response  = array('responseType' => '','response' => array('message' => '','content' => false, ), );
 
 		try {
+				if ( $destination == "/" ) $destination = "";
 				// Creating Dropbox Folder
 				$folder = $this->dropbox->createFolder( $destination . "/" . $name);
 

@@ -40,6 +40,7 @@ function jsonMatch ( obj, key ) {
 
 $( '#browserRefresh' ).click(function( t ){
 	getAllFiles();
+	getFolderList();
 })
 
 // Upload form handler
@@ -88,9 +89,9 @@ $( '#gsNewFolder' ).submit(function( event ) {
 	var posting = $.ajax( {
 		url : 'webapp.uploader.php',
 	    type: 'POST',
-	    data: new FormData( this ),
 	    processData: false,
-	    contentType: false, // jquery bug: can't use multipart/form-data.
+	    contentType: false, 
+	    data: new FormData( this ),
 	    beforeSend: function( data ){
 			$( '#status' ).empty().append("Checking path...");
 		},success: function( data ){
@@ -118,7 +119,7 @@ $( '#gsMoveFolder' ).submit(function( event ) {
 	    type: 'POST',
 	    data: new FormData( this ),
 	    processData: false,
-	    contentType: false, // jquery bug: can't use multipart/form-data.
+	    contentType: false, 
 	    beforeSend: function( data ){
 			$( '#status' ).empty().append("Moving folder...");
 		},success: function( data ){
@@ -139,7 +140,6 @@ $( '[data-path-move]' ).change(function( result ) {
 	var r = result.target;
 	if ( r.name == "moveFolderOldPath" ){
 		var t = r.value.split("/");
-		console.log("t: "+t);
 		newPath[1] = t[t.length-1];
 	}
 	if ( r.name == "moveFolderNewPath" ){
