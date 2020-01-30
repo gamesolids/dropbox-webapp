@@ -473,4 +473,8 @@ if (isset($_POST['renameFileOldName'])) {
 	header('Content-Type: application/json');
 	echo json_encode($gsUpload -> renameFile());
 }
+if (isset($_POST['moveFileNewPath'])) {
+	header('Content-Type: application/json');
+	echo json_encode($gsUpload -> moveFile());
+}
 ?>

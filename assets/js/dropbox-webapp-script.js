@@ -77,6 +77,48 @@ $( '#gsUploadFile' ).submit(function( event ) {
 });
 
 
+// Move folder to new home
+$( '#gsMoveFile' ).submit(function( event ) {
+
+	// Stop form from submitting normally
+	event.preventDefault();
+	// hide the form, show spinning cogs
+	$( this ).hide();
+	$( '#progress' ).show();
+
+	var newPath = $('select[name="moveFileNewPath"]').val() // new folder path
+	var np = newPath.split("/"); 							// new folder depth
+	var oldPath = $( '#filePath' ).text().split("/"); 		// old folder path
+	var filename = oldPath.pop();							// extract filename 
+
+	// rebuild new path with filename depending on depth
+	if( np.length > 1 ){
+		newName = np.join("/") + "/" + filename;
+	}else{
+		newName = "/" + filename;
+	}
+	// the send packet
+	var renameData = { moveFileOldPath: $( '#filePath' ).text() , moveFileNewPath: newPath }
+
+	// Collect form data and POST to uploader.
+	var posting = $.ajax( {
+		url : 'webapp.uploader.php',
+	    type: 'POST',
+	    data: renameData,
+	    beforeSend: function( data ){
+			$( '#status' ).empty().append("Moving file...");
+		},success: function( data ){
+			$( '#status' ).empty().append("Complete.");
+			$( '#progress' ).hide();
+		}
+	}); 
+	// Once the file is successfully moved in dropbox:
+	posting.done(function( data ) {
+		$( '#gsMoveFile' ).trigger( 'reset' ).show();
+
+	});
+});
+
 
 // Upload form handler
 $( '#gsRenameFile' ).submit(function( event ) {
@@ -102,13 +144,10 @@ $( '#gsRenameFile' ).submit(function( event ) {
 			$( '#progress' ).hide();
 		}
 	}); 
-	// Once the file is successfully in dropbox:
+	// Once the file is successfully renamed in dropbox:
 	posting.done(function( data ) {
 		// request that a share link be made
 		var file = data.response.content.dropboxResponse.response.content.file;
-		//getSharingInfo( file.path_lower, true );
-		// feedback
-		//$( '#filePath' ).empty().append( file.path_display );
 		$( '#gsRenameFile' ).trigger( 'reset' ).show();
 	});
 });
@@ -164,7 +203,7 @@ $( '#gsMoveFolder' ).submit(function( event ) {
 			$( '#progress' ).hide();
 		}
 	}); 
-	// Once the folder is successfully in dropbox:
+	// Once the folder is successfully moved in dropbox:
 	posting.done(function( data ) {
 		$( '#gsMoveFolder' ).trigger( 'reset' ).show();
 	});
@@ -223,7 +262,7 @@ $( '#gsDeleteFolder' ).submit(function( event ) {
 
 	// Once the file is successfully removed from dropbox:
 	posting.done(function( data ) {
-		$( '#gsNewFolder' ).trigger( 'reset' ).show();
+		$( '#gsDeleteFolder' ).trigger( 'reset' ).show();
 	});
 });
 
@@ -265,7 +304,13 @@ function getSharingInfo( shareFile, forceActive=false ){
 		// move file location
 		$( '#inserter .fa-truck-moving' ).click(function( clicker ){
 			console.log("TODO: move file.");
+		});
 
+		// move file location
+		$( '#inserter .fa-edit' ).click(function( clicker ){
+			var tarr = $('#filePath').text().split("/");
+			var filename = tarr[tarr.length - 1]; 
+			$('input[name="renameFileNewName"]').val(filename);
 		});
 
 		// delete file

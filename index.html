@@ -42,6 +42,7 @@
 				</div>
 				<div class="grid-x">
 					<div class="cell">
+
 						<div class="reveal callout" id="renameFileModal" data-reveal>
 							<h3>Rename File</h3>
 							<form method="POST" enctype="application/x-www-form-urlencoded" id="gsRenameFile">
@@ -62,6 +63,27 @@
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
+
+						<div class="reveal callout" id="moveFileModal" data-reveal>
+							<h3>Move File</h3>
+							<form method="POST" enctype="application/x-www-form-urlencoded" id="gsMoveFile">
+								<div class="grid-x">
+									<div class="cell medium-6 grid-padding-x">
+										<label>Where would you like to move the file?
+											<select name="moveFileNewPath" data-dynamic-list-folders data-path-move placeholder="root">
+												<!-- filled by API call -->
+											</select>
+										</label>
+									</div>
+								</div>
+								<div class="grid-x">
+									<div class="cell">
+										<input type="submit" class="button float-right" value="Move File">
+									</div>
+								</div>
+							</form>
+						</div>
+
 						<div id="inserter" >
 							<table>
 								<tbody>
@@ -70,7 +92,7 @@
 										<td id="filePath"> /path/to/file.type </td>
 										<td class="buttonList">
 											<span data-tooltip title="Rename File."><a href="#" data-open="renameFileModal" ><i class="fas fa-edit fa-lg "></i></a></span>
-											<span data-tooltip title="Move file to new location."><a href="#"><i class="fas fa-truck-moving fa-lg "></i></a></span>
+											<span data-tooltip title="Move file to new location."><a href="#" data-open="moveFileModal" ><i class="fas fa-truck-moving fa-lg "></i></a></span>
 											<span data-tooltip title="Delete this file."><a href="#" style="color:red;"><i class="fas fa-trash-alt fa-lg "></i></a></span>
 										</td>
 									</tr>
@@ -237,8 +259,6 @@
 			<br />
 			<br />
 		</div> <!-- end tab content -->
-		<br />
-		<br />
 		<script src="assets/js/vendor/jquery.js"></script>
 		<script src="assets/js/dropbox-webapp-script.js"></script>
 		<script src="assets/js/vendor/what-input.js"></script>
