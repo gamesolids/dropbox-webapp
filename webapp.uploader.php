@@ -117,6 +117,115 @@ class webappUploader {
 
 
 	/**
+	 * Move file to new destination
+	 * 
+	 * @return array An associaciative array with folder success data or error information.
+	 */
+	public function moveFile(){
+
+		// Check if file was uploaded
+		if (isset($_POST["moveFileOldPath"])) {
+
+			$response  = array('responseType' => '','response' => array('message' => '','content' => false, ), );
+
+			$pathtodo = array(2);
+			try {
+
+				$t = explode( "/", $_POST["moveFileOldPath"] );
+				$t = $t[ count( $t ) -1 ];
+				$pathtodo[1] = $t;
+				// get old folder name
+				$pathtodo[0] = $_POST['moveFileNewPath'];
+				// build new path
+				$paf = implode("/", $pathtodo );
+				// Upload the file to Dropbox
+				$shareData = $this->dropbox->moveFile( $_POST['moveFileOldPath'], $paf );
+
+				// if still good, build our response.
+				$response['responseType'] = 'success';
+				$response['response']['message'] = 'Received request to move a folder. $paf: '.$paf;
+				$response['response']['content'] = array('dropboxResponse' => $shareData, );
+
+			} catch (\Exception $e) {
+
+				$data = $e->getMessage();
+
+				// if not still good, then build that response
+				$response['responseType'] = 'error';
+				$response['response']['message'] = 'There was a problem moving the file.';
+				$response['response']['content'] = array('errorText' => $data, );
+			
+			} // end try
+		} else {
+			// if no file was sent
+			$data = array( 'error_summary' => "Could not locate path.", 'error' => array( '.tag' => "path", 'path' => array( '.tag' => "action_stopped", ), ), );
+
+			$response['responseType'] = 'error';
+			$response['response']['message'] = 'There is no location.';
+			$response['response']['content'] = array('errorText' => $data, );
+		
+		} // end if isset
+
+		return $response;
+	}
+
+
+
+	/**
+	 * Move file to new destination
+	 * 
+	 * @return array An associaciative array with folder success data or error information.
+	 */
+	public function renameFile(){
+
+		// Check if file was uploaded
+		if (isset($_POST["renameFileOldName"])) {
+
+			$response  = array('responseType' => '','response' => array('message' => '','content' => false, ), );
+
+			$pathtodo = array(2);
+			try {
+
+				$t = explode( "/", $_POST["renameFileOldName"] );
+				if ( count($t) > 1 ) array_pop($t);
+				$pathtodo = implode("/", $t );
+				// get old folder name
+				$pathtodo .= "/".$_POST['renameFileNewName'];
+
+				// Upload the file to Dropbox
+				$shareData = $this->dropbox->moveFile( $_POST['renameFileOldName'], $pathtodo );
+
+				// if still good, build our response.
+				$response['responseType'] = 'success';
+				$response['response']['message'] = 'Received request to move folder. ';
+				$response['response']['content'] = array('dropboxResponse' => $shareData, );
+
+			} catch (\Exception $e) {
+
+				$data = $e->getMessage();
+
+				// if not still good, then build that response
+				$response['responseType'] = 'error';
+				$response['response']['message'] = 'There was a problem moving the file.';
+				$response['response']['content'] = array('errorText' => $data, );
+			
+			} // end try
+		} else {
+			// if no file was sent
+			$data = array( 'error_summary' => "Could not locate path.", 'error' => array( '.tag' => "path", 'path' => array( '.tag' => "action_stopped", ), ), );
+
+			$response['responseType'] = 'error';
+			$response['response']['message'] = 'There is no location.';
+			$response['response']['content'] = array('errorText' => $data, );
+		
+		} // end if isset
+
+		return $response;
+	}
+
+
+
+	/**
 	 * Get full directory listing as path list.
 	 * 
 	 * @return array An associaciative array with file share data or error information.
@@ -211,7 +320,7 @@ class webappUploader {
 
 
 	/**
-	 * Create a new folder at specified destination
+	 * Move folder to new destination
 	 * 
 	 * @return array An associaciative array with folder success data or error information.
 	 */
@@ -359,5 +468,9 @@ if (isset($_POST['moveFolderOldPath'])) {
 if (isset($_POST['deleteFolderPath'])) {
 	header('Content-Type: application/json');
 	echo json_encode($gsUpload -> deleteFolder());
+}
+if (isset($_POST['renameFileOldName'])) {
+	header('Content-Type: application/json');
+	echo json_encode($gsUpload -> renameFile());
 }
 ?>

@@ -42,6 +42,26 @@
 				</div>
 				<div class="grid-x">
 					<div class="cell">
+						<div class="reveal callout" id="renameFileModal" data-reveal>
+							<h3>Rename File</h3>
+							<form method="POST" enctype="application/x-www-form-urlencoded" id="gsRenameFile">
+								<div class="grid-x">
+									<div class="cell">
+										<label>New filename
+											<input type="text" name="renameFileNewName" value="newName" ><span id="renameFileType"></span>
+										</label>
+									</div>
+								</div>
+								<div class="grid-x">
+									<div class="cell">
+										<input type="submit" value="Rename File" class="button float-right">
+									</div>
+								</div>
+							</form>
+							<button class="close-button" data-close aria-label="Close modal" type="button">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
 						<div id="inserter" >
 							<table>
 								<tbody>
@@ -49,7 +69,7 @@
 										<td>Location: </td>
 										<td id="filePath"> /path/to/file.type </td>
 										<td class="buttonList">
-											<span data-tooltip title="Rename File."><a href="#"><i class="fas fa-edit fa-lg "></i></a></span>
+											<span data-tooltip title="Rename File."><a href="#" data-open="renameFileModal" ><i class="fas fa-edit fa-lg "></i></a></span>
 											<span data-tooltip title="Move file to new location."><a href="#"><i class="fas fa-truck-moving fa-lg "></i></a></span>
 											<span data-tooltip title="Delete this file."><a href="#" style="color:red;"><i class="fas fa-trash-alt fa-lg "></i></a></span>
 										</td>
@@ -58,7 +78,7 @@
 										<td>Embed Link: </td>
 										<td id="fileURL"> //modified/url/to/embed/file.type </td>
 										<td class="buttonList">
-											<span data-tooltip title="Insert into wiki editor."><a href="#"><i class="fas fa-outdent fa-lg "></i></a></span>
+											<span data-tooltip title="Insert into wiki editor." id="insertOptions"><a href="#"><i class="fas fa-outdent fa-lg "></i></a></span>
 											<span data-tooltip title="Copy embed URL to clipboard."><a href="#"><i class="fas fa-clipboard fa-lg "></i></a></span>
 											<span data-tooltip title="Download to your computer."><a href="#" download><i class="fas fa-file-download fa-lg "></i></a></span>
 										</td>
@@ -181,7 +201,7 @@
 					</div>
 					<div class="grid-x">
 						<div class="cell">
-							<div class="reveal callout alert" id="exampleModal1" data-reveal>
+							<div class="reveal callout alert" id="checkDeleteModal" data-reveal>
 								<h1><i class="far fa-surprise"></i>MFG!</h1>
 								<p class="lead" id="deleteConfirm">You're really gonna do it. </p>
 								<!-- Thanks to: https://stackoverflow.com/a/23456905/647485 only need to hide the label. -->
@@ -191,7 +211,7 @@
 									<span aria-hidden="true">&times;</span>
 								</button>
 							</div>
-							<a class="button float-right" data-open="exampleModal1" href="#" >Delete Folder</a>
+							<a class="button float-right" data-open="checkDeleteModal" href="#" >Delete Folder</a>
 						</div>
 					</div>
 					<!-- Hidden submit button with label defined up above. -->

@@ -77,6 +77,43 @@ $( '#gsUploadFile' ).submit(function( event ) {
 });
 
 
+
+// Upload form handler
+$( '#gsRenameFile' ).submit(function( event ) {
+
+	// Stop form from submitting normally
+	event.preventDefault();
+	// hide the form, show spinning cogs
+	$( this ).hide();
+	$( '#progress' ).show();
+
+	var renameData = { renameFileOldName: $( '#filePath' ).text() , renameFileNewName: $('input[name="renameFileNewName"]').val()}
+
+
+	// Collect form data and POST to uploader.
+	var posting = $.ajax( {
+		url : 'webapp.uploader.php',
+	    type: 'POST',
+	    data: renameData,
+	    beforeSend: function( data ){
+			$( '#status' ).empty().append("Renaming...");
+		},success: function( data ){
+			$( '#status' ).empty().append("Complete.");
+			$( '#progress' ).hide();
+		}
+	}); 
+	// Once the file is successfully in dropbox:
+	posting.done(function( data ) {
+		// request that a share link be made
+		var file = data.response.content.dropboxResponse.response.content.file;
+		//getSharingInfo( file.path_lower, true );
+		// feedback
+		//$( '#filePath' ).empty().append( file.path_display );
+		$( '#gsRenameFile' ).trigger( 'reset' ).show();
+	});
+});
+
+
 // New folder from user
 $( '#gsNewFolder' ).submit(function( event ) {
 
@@ -225,6 +262,17 @@ function getSharingInfo( shareFile, forceActive=false ){
 		$( '#fileURL' ).empty().append( embedLink );
 		$( '#originalURL' ).empty().append( content );
 
+		// move file location
+		$( '#inserter .fa-truck-moving' ).click(function( clicker ){
+			console.log("TODO: move file.");
+
+		});
+
+		// delete file
+		$( '#inserter .fa-trash-alt' ).click(function( clicker ){
+			console.log("TODO: implement delete.");
+		});
+
 		// get the text in previous tablecell and store to clipboard
 		$( '#inserter .fa-clipboard' ).click(function( clicker ){
 			var actionElement = $('td', $( this ).closest('tr')).eq(1).text();
@@ -240,7 +288,7 @@ function getSharingInfo( shareFile, forceActive=false ){
 		// if opened from media wiki editor: add insert function.
 		if(window.opener == null || window.opener == false ){
 			$( '#insertOptions' ).hide();
-			$( 'span:first', $('.buttonList ')).hide();
+			//$( 'span:first', $('.buttonList ')).hide();
 		}else{
 			$( '#inserter' ).click(function(){
 				// caretInsert is defined in `MediaWiki:Common.js`
