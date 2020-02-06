@@ -39,9 +39,9 @@ function jsonMatch ( obj, key ) {
 /* UI functions */
 
 $( '#browserRefresh' ).click(function( t ){
-	getAllFiles();
 	getFolderList();
-})
+	getAllFiles();
+});
 
 // Upload form handler
 $( '#gsUploadFile' ).submit(function( event ) {
@@ -410,7 +410,7 @@ function getAllFiles(){
 				$( '#status' ).empty().append("Retrieving file list...");
 				$( '#progress' ).show();
 				// if not, then make the call
-				var pathFromID = $(clicker.target.parentNode).attr('id').replaceAll("-_-","/");
+				var pathFromID = $(clicker.target.parentNode).attr('id').replaceAll("-_-","/").replaceAll("_"," ");
 				$.post('webapp.browser.php',{get:"allFiles", path:pathFromID}, function( data ){
 					var files = data.response.content.dropboxResponse;
 					// sort by type
@@ -472,7 +472,12 @@ function makeElement( fileObj, type, steps=0 ){
 			break;
 	}
 	// set up the div style based on file type
-	var id = "id=\""+fileObj.response.content.path_lower.replaceAll("/","-_-")+"\" ";
+	var cleaned = fileObj.response.content.path_lower.replaceAll("/","-_-");
+	cleaned = cleaned.replaceAll(" ","_");
+
+	console.log(cleaned);
+
+	var id = "id=\""+ cleaned +"\" ";
 	var dclass = "class=\"" + type + "\" ";
 	var margin = "style=\"margin: 1px 6px 1px 6px;\" ";
 	var fileElement = "<div " + id + dclass + ">"; 			// start block
@@ -488,7 +493,7 @@ function makeElement( fileObj, type, steps=0 ){
 		$("#browserContent").append(fileElement);
 	}else{
 		// else find the correct parent 
-		var parentID = "#" + fileObj.response.content.path_lower.replaceAll("/","-_-");
+		var parentID = "#" + cleaned;
 		parentID = parentID.substr(0, parentID.lastIndexOf("-_-"));
 		// append the element to parent element
 		$(parentID).find('div').first().append(fileElement);
