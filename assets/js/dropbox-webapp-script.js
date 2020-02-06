@@ -438,7 +438,7 @@ function getAllFiles(){
 		// setup file click events (file = every filetype not a folder)
 		$( '#browserContent' ).on('click', '[data-filetype][data-filetype!="folder"]', function( clicker ){
 			// turn id into search path
-			var pathFromID = $(clicker.target.parentNode).attr('id').replaceAll("-_-","/");
+			var pathFromID = $(clicker.target.parentNode).attr('id').replaceAll("-_-","/").replaceAll("_"," ");
 			getSharingInfo( pathFromID, false );
 			$( '#filePath' ).empty().append( pathFromID );
 		});
