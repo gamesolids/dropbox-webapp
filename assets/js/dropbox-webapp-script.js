@@ -410,7 +410,7 @@ function getAllFiles(){
 				$( '#status' ).empty().append("Retrieving file list...");
 				$( '#progress' ).show();
 				// if not, then make the call
-				var pathFromID = $(clicker.target.parentNode).attr('id').replaceAll("-_-","/").replaceAll("_"," ");
+				var pathFromID = $(clicker.target.parentNode).attr('id').replaceAll("-_-","/").replaceAll("_-_"," ");
 				$.post('webapp.browser.php',{get:"allFiles", path:pathFromID}, function( data ){
 					var files = data.response.content.dropboxResponse;
 					// sort by type
@@ -438,7 +438,7 @@ function getAllFiles(){
 		// setup file click events (file = every filetype not a folder)
 		$( '#browserContent' ).on('click', '[data-filetype][data-filetype!="folder"]', function( clicker ){
 			// turn id into search path
-			var pathFromID = $(clicker.target.parentNode).attr('id').replaceAll("-_-","/").replaceAll("_"," ");
+			var pathFromID = $(clicker.target.parentNode).attr('id').replaceAll("-_-","/").replaceAll("_-_"," ");
 			getSharingInfo( pathFromID, false );
 			$( '#filePath' ).empty().append( pathFromID );
 		});
@@ -473,7 +473,7 @@ function makeElement( fileObj, type, steps=0 ){
 	}
 	// set up the div style based on file type
 	var cleaned = fileObj.response.content.path_lower.replaceAll("/","-_-");
-	cleaned = cleaned.replaceAll(" ","_");
+	cleaned = cleaned.replaceAll(" ","_-_");
 
 	console.log(cleaned);
 
