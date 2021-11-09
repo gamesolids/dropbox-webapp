@@ -9,31 +9,34 @@ use Kunnu\Dropbox\DropboxApp;
 use Kunnu\Dropbox\DropboxFile;
 use Kunnu\Dropbox\Exceptions\DropboxClientException;
 
+
 /**
- * Base dropbox access
+ * WebappBase configures the application and provides access to Dropbox.
+ * 
  */
 
-class webappBase 
+class WebappBase 
 {
 
-	// application reference
 	private $app = '';
 	private $dropbox = NULL;
-	// the current working directory
 	private $cursor = NULL;
 
-	//
+	/**
+	 * Class constructor.
+	 *
+	 */
 	function __construct() {
 		//Configure Dropbox Application
 		require 'webapp.config.php';
 		$this->app = new DropboxApp( $dropbox_config['app_key'], $dropbox_config['app_secret'], $dropbox_config['access_token'] );
 
-		//Configure Dropbox service
+		//Create Dropbox service
 		$this->dropbox = new Dropbox($this->app);
 	}
 
 	/**
-	 * Get/Set our current Dropbox cursor (used iterating/paginating long file lists)
+	 * Get our current Dropbox cursor (used iterating/paginating long file lists)
 	 * 
 	 * @return cursor or null 
 	 */
@@ -43,7 +46,7 @@ class webappBase
 	}
 
 	/**
-	 * Get/Set our current Dropbox cursor (used iterating/paginating long file lists)
+	 * Set our current Dropbox cursor (used iterating/paginating long file lists)
 	 * 
 	 * @param cursor $db_cursor is dropbox file cursor used in requesting pages
 	 * @return cursor or null
@@ -57,13 +60,13 @@ class webappBase
 
 
 	/**
-	 * Create a new dropbox file
+	 * Add a new file
 	 * 
 	 * @param array $file is an array `$file = array('path'=>'/path/folder', 'name'=>'filename.jpg')`
-	 * @param string $destination Optional. The dropbox path where the file will be stored.
+	 * @param string $destination Optional. The dropbox path where the file will be stored. Defalut is the app root.
 	 * @return array An associaciative array with file data or error information.
 	 */
-	private function newFile($file,$destination) {
+	private function newFile($file, $destination) {
 
 		//use current location if unspecified
 		$destination = is_null($destination)?$this-getPath():$destination;
@@ -99,13 +102,13 @@ class webappBase
 
 
 	/**
-	 * Create a new dropbox folder
+	 * Create a new folder
 	 * 
 	 * @param string $name The folder you want to create
 	 * @param string $destination Optional. Where you want to create the folder. Root is default.
 	 * @return array An associaciative array with folder data or error information.
 	 */
-	private function newFolder($name,$destination) {
+	private function newFolder($name, $destination) {
 
 		//use current location if unspecified
 		$destination = is_null($destination)?$this-getPath():$destination;
@@ -139,7 +142,7 @@ class webappBase
 
 
 	/**
-	 * Get dropbox data for file
+	 * Get file metadata
 	 * @param string $file The folder you want to get data on
 	 * @return array An associaciative array with folder data or error information.
 	 */
@@ -173,10 +176,10 @@ class webappBase
 
 
 	/**
-	 * Get sharing info if it exists, optionally make it if not.
+	 * Get sharing info if it exists, optionally make link if not.
 	 * 
-	 * @param string $file The file you want to check for sharing info
-	 * @param string $create_share Optional. Create a shared link if it does not exist
+	 * @param string $file Path to the file you want to check for sharing info
+	 * @param bool $create_share Optional. Create a shared link if it does not exist
 	 * @return array An associative array with file data or error information.
 	 */
 	private function getSharingInfo( $file, $create_share=false ) {
@@ -232,7 +235,7 @@ class webappBase
 
 
 	/**
-	 * delete dropbox file
+	 * delete a file
 	 * 
 	 * @param string $file The folder you want to remove
 	 * @return array An associaciative array with folder data or error information.
@@ -267,7 +270,7 @@ class webappBase
 
 
 	/**
-	 * move a dropbox file
+	 * move a file 
 	 * 
 	 * @param string $file The folder you want to move
 	 * @param string $destination The folder you want land in
@@ -303,10 +306,10 @@ class webappBase
 
 
 	/**
-	 * get dropbox folder contents
+	 * get contents of a specific folder
 	 * 
-	 * @param string $file The folder you want to get data on
-	 * @param string $destination The folder you want land in
+	 * @param string $file The folder you want to get contents of
+	 * @param bool 	$recursive should the list open sub-folders
 	 * @return array An associaciative array with folder data or error information.
 	 */
 	private function getFolderContents( $folder, $recursive = false ) {
@@ -360,7 +363,7 @@ class webappBase
 
 
 	/**
-	 * returns the complete folder structure as list of paths
+	 * return the complete folder structure as list of paths
 	 * 
 	 * @return array An associaciative array with folder data or error information.
 	 */
@@ -418,34 +421,9 @@ class webappBase
 	} // end getFolderContents
 
 	// TODO: duplicate, rename
+
 	private function isJson($str) {
 		$json = json_decode($str);
 		return $json && $str != $json;
 	}
 } // end class
-
-
-// navigate to this page in browser
-// simple test case: 
-// /dropbox-webapp/webapp.base.php?test=/some/known/file.txt
-/*
-if(isset($_GET['test'])){
-	header('Content-Type: application/json');
-	$app = new webappBase();
-	$resultingIn = $app->getSharingInfo( stripslashes( $_GET['test'] ));
-	echo json_encode($resultingIn);
-}
-*/
-// simple test case:
-// /dropbox-webapp/webapp.base.php?folder=/some/folder 
-/*
-if(isset($_GET['folder'])){
-
-	header('Content-Type: application/json');
-	$app = new webappBase();
-	$resultingIn = $app->getFolderContents( stripslashes( $_GET['folder'] ));
-	
-	echo json_encode($resultingIn);
-}
-*/
-?>
