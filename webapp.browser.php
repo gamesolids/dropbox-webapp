@@ -8,11 +8,11 @@ namespace gamesolids;
 
 class webappBrowser {
 
-	private $dropbox = NULL;
+	protected $dropbox = NULL;
 	private $currentPath = "/";
 	private $currentMethod = "allFiles";
 
-	function __construct(){
+	public function __construct(){
 		require 'webapp.base.php';
 		$this->dropbox = new webappBase();
 	}
@@ -23,7 +23,7 @@ class webappBrowser {
 	 * 
 	 * @return array An associaciative array with folder content data or error information.
 	 */
-	function getFolder(){
+	private function getFolder(){
 
 		if (isset($_POST["get"])) {
 			// containers

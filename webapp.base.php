@@ -37,7 +37,7 @@ class webappBase
 	 * 
 	 * @return cursor or null 
 	 */
-	public function getCursor() {
+	private function getCursor() {
 		
 		return $this->cursor;
 	}
@@ -48,7 +48,7 @@ class webappBase
 	 * @param cursor $db_cursor is dropbox file cursor used in requesting pages
 	 * @return cursor or null
 	 */
-	public function setCursor($db_cursor) {
+	private function setCursor($db_cursor) {
 
 		$this->cursor = $db_cursor;
 
@@ -63,7 +63,7 @@ class webappBase
 	 * @param string $destination Optional. The dropbox path where the file will be stored.
 	 * @return array An associaciative array with file data or error information.
 	 */
-	public function newFile($file,$destination) {
+	private function newFile($file,$destination) {
 
 		//use current location if unspecified
 		$destination = is_null($destination)?$this-getPath():$destination;
@@ -105,7 +105,7 @@ class webappBase
 	 * @param string $destination Optional. Where you want to create the folder. Root is default.
 	 * @return array An associaciative array with folder data or error information.
 	 */
-	public function newFolder($name,$destination) {
+	private function newFolder($name,$destination) {
 
 		//use current location if unspecified
 		$destination = is_null($destination)?$this-getPath():$destination;
@@ -143,7 +143,7 @@ class webappBase
 	 * @param string $file The folder you want to get data on
 	 * @return array An associaciative array with folder data or error information.
 	 */
-	public function getFileMeta( $file ) {
+	private function getFileMeta( $file ) {
 
 		$response  = array('responseType' => '','response' => array('message' => '','content' => false, ), );
 
@@ -179,7 +179,7 @@ class webappBase
 	 * @param string $create_share Optional. Create a shared link if it does not exist
 	 * @return array An associative array with file data or error information.
 	 */
-	public function getSharingInfo( $file, $create_share=false ) {
+	private function getSharingInfo( $file, $create_share=false ) {
 
 		$response  = array('responseType' => '','response' => array('message' => '','content' => false, ), );
 
@@ -237,7 +237,7 @@ class webappBase
 	 * @param string $file The folder you want to remove
 	 * @return array An associaciative array with folder data or error information.
 	 */
-	public function deleteFile( $file ) {
+	private function deleteFile( $file ) {
 
 		$response  = array('responseType' => '','response' => array('message' => '','content' => false, ), );
 
@@ -273,7 +273,7 @@ class webappBase
 	 * @param string $destination The folder you want land in
 	 * @return array An associaciative array with folder data or error information.
 	 */
-	public function moveFile( $file, $destination ) {
+	private function moveFile( $file, $destination ) {
 
 		$response  = array('responseType' => '','response' => array('message' => '','content' => false, ), );
 
@@ -309,7 +309,7 @@ class webappBase
 	 * @param string $destination The folder you want land in
 	 * @return array An associaciative array with folder data or error information.
 	 */
-	public function getFolderContents( $folder, $recursive = false ) {
+	private function getFolderContents( $folder, $recursive = false ) {
 
 		$response  = array('responseType' => '','response' => array('message' => '','content' => false, ), );
 
@@ -364,7 +364,7 @@ class webappBase
 	 * 
 	 * @return array An associaciative array with folder data or error information.
 	 */
-	public function getFolderList(  ) {
+	private function getFolderList(  ) {
 
 		$response  = array('responseType' => '','response' => array('message' => '','content' => false, ), );
 

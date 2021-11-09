@@ -8,9 +8,9 @@ namespace gamesolids;
 
 class webappUploader {
 
-	private $dropbox = NULL;
+	protected $dropbox = NULL;
 
-	function __construct(){
+	public function __construct(){
 		require 'webapp.base.php';
 		$this->dropbox = new webappBase();
 	}
@@ -23,7 +23,7 @@ class webappUploader {
 	 * 
 	 * @return array An associaciative array with uploaded file data or error information.
 	 */
-	public function uploadFile(){
+	private function uploadFile(){
 
 		// Check if file was uploaded
 		if (isset($_FILES["uploadFile"])) {
@@ -74,7 +74,7 @@ class webappUploader {
 	 * 
 	 * @return array An associaciative array with file share data or error information.
 	 */
-	public function getUploadShare(){
+	private function getUploadShare(){
 
 		// Check if file was uploaded
 		if (isset($_POST["sharePath"])) {
@@ -121,7 +121,7 @@ class webappUploader {
 	 * 
 	 * @return array An associaciative array with folder success data or error information.
 	 */
-	public function moveFile(){
+	private function moveFile(){
 
 		// Check if file was uploaded
 		if (isset($_POST["moveFileOldPath"])) {
@@ -176,7 +176,7 @@ class webappUploader {
 	 * 
 	 * @return array An associaciative array with folder success data or error information.
 	 */
-	public function renameFile(){
+	private function renameFile(){
 
 		// Check if file was uploaded
 		if (isset($_POST["renameFileOldName"])) {
@@ -230,7 +230,7 @@ class webappUploader {
 	 * 
 	 * @return array An associaciative array with file share data or error information.
 	 */
-	public function getFolderList(){
+	private function getFolderList(){
 
 		// Check if file was uploaded
 		if (isset($_POST["folderList"])) {
@@ -277,7 +277,7 @@ class webappUploader {
 	 * 
 	 * @return array An associaciative array with folder success data or error information.
 	 */
-	public function makeNewFolder(){
+	private function makeNewFolder(){
 
 		// Check if file was uploaded
 		if (isset($_POST["newFolderName"])) {
@@ -324,7 +324,7 @@ class webappUploader {
 	 * 
 	 * @return array An associaciative array with folder success data or error information.
 	 */
-	public function moveFolder(){
+	private function moveFolder(){
 
 		// Check if file was uploaded
 		if (isset($_POST["moveFolderOldPath"])) {
@@ -379,7 +379,7 @@ class webappUploader {
 	 * 
 	 * @return array An associaciative array with folder success data or error information.
 	 */
-	public function deleteFolder(){
+	private function deleteFolder(){
 
 		// Check if file was uploaded
 		if (isset($_POST["deleteFolderPath"])) {
@@ -422,7 +422,7 @@ class webappUploader {
 
 
 	// quick test to check hiearchy
-	public function test($tpath){
+	private function test($tpath){
 
 		return $this->dropbox->getFileMeta( $tpath );
 	}
