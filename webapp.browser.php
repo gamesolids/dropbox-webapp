@@ -3,7 +3,7 @@
 namespace gamesolids;
 
 /**
- * Uses $_POST data to format a file information request
+ * WebappBrowser uses $_POST data to format a file information request
  * 
  */
 

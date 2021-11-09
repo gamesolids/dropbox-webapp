@@ -416,7 +416,7 @@ class WebappBase
 
 	// TODO: duplicate, rename
 
-	private function isJson($str) {
+	private function isJSON($str) {
 		$json = json_decode($str);
 		return $json && $str != $json;
 	}

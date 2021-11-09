@@ -3,23 +3,20 @@
 namespace gamesolids;
 
 /**
- * upload to dropbox
+ * WebappUploader uses $_POST data and attached file to add files to app
  */
 
-class webappUploader {
+class WebappUploader {
 
-	protected $dropbox = NULL;
+	private $dropbox = NULL;
 
 	public function __construct(){
 		require 'webapp.base.php';
 		$this->dropbox = new webappBase();
 	}
 
-	
-
-
 	/**
-	 * Upload a file from POST data.
+	 * Upload a file 
 	 * 
 	 * @return array An associaciative array with uploaded file data or error information.
 	 */
@@ -70,7 +67,7 @@ class webappUploader {
 
 
 	/**
-	 * Get sharing information from uploaded file.
+	 * Get sharing information about uploaded file.
 	 * 
 	 * @return array An associaciative array with file share data or error information.
 	 */
@@ -172,7 +169,7 @@ class webappUploader {
 
 
 	/**
-	 * Move file to new destination
+	 * Rename a file
 	 * 
 	 * @return array An associaciative array with folder success data or error information.
 	 */
@@ -226,7 +223,7 @@ class webappUploader {
 
 
 	/**
-	 * Get full directory listing as path list.
+	 * Makes a call to underlying webapp.base->getFolderList()
 	 * 
 	 * @return array An associaciative array with file share data or error information.
 	 */
@@ -320,7 +317,7 @@ class webappUploader {
 
 
 	/**
-	 * Move folder to new destination
+	 * Move folder to new destination (This will also move all files in folder)
 	 * 
 	 * @return array An associaciative array with folder success data or error information.
 	 */
@@ -375,7 +372,7 @@ class webappUploader {
 
 
 	/**
-	 * remove folder at specified destination
+	 * delete specified folder
 	 * 
 	 * @return array An associaciative array with folder success data or error information.
 	 */
@@ -430,51 +427,40 @@ class webappUploader {
 } // end class
 
 
-// navigate to this page in browser
-// simple test case: 
-// /dropbox-webapp/webapp.uploader.php?upload=/some/known/file.txt
-/*
-if(isset($_GET['upload'])){
-
-	header('Content-Type: application/json');
-	$app = new webappUploader();
-	$resultingIn = $app->test( stripslashes( $_GET['upload'] ));
-	
-	echo json_encode($resultingIn);
-}
-*/
-
-$gsUpload = new webappUploader();
-if (isset($_FILES["uploadFile"]) && $_POST['uploadPath']) {
+/**
+ * Map all incoming requests to desired methods
+ * 
+ */
+$gsUpload = new WebappUploader();
+if (isset($_FILES["uploadFile"]) && $gsUpload->isJSON($_POST['uploadPath']) ) {
 	header('Content-Type: application/json');
 	echo json_encode($gsUpload -> uploadFile());
 }
-if (isset($_POST["sharePath"])) {
+if (isset($_POST["sharePath"]) && $gsUpload->isJSON($_POST["sharePath"]) ) {
 	header('Content-Type: application/json');
 	echo json_encode($gsUpload -> getUploadShare());
 }
-if (isset($_POST['folderList'])) {
+if (isset($_POST['folderList']) && $gsUpload->isJSON($_POST["folderList"]) ) {
 	header('Content-Type: application/json');
 	echo json_encode($gsUpload -> getFolderList());
 }
-if (isset($_POST['newFolderName'])) {
+if (isset($_POST['newFolderName']) && $gsUpload->isJSON($_POST["newFolderName"]) ) {
 	header('Content-Type: application/json');
 	echo json_encode($gsUpload -> makeNewFolder());
 }
-if (isset($_POST['moveFolderOldPath'])) {
+if (isset($_POST['moveFolderOldPath']) && $gsUpload->isJSON($_POST["moveFolderOldPath"]) ) {
 	header('Content-Type: application/json');
 	echo json_encode($gsUpload -> moveFolder());
 }
-if (isset($_POST['deleteFolderPath'])) {
+if (isset($_POST['deleteFolderPath']) && $gsUpload->isJSON($_POST["deleteFolderPath"]) ) {
 	header('Content-Type: application/json');
 	echo json_encode($gsUpload -> deleteFolder());
 }
-if (isset($_POST['renameFileOldName'])) {
+if (isset($_POST['renameFileOldName']) && $gsUpload->isJSON($_POST["renameFileOldName"]) ) {
 	header('Content-Type: application/json');
 	echo json_encode($gsUpload -> renameFile());
 }
-if (isset($_POST['moveFileNewPath'])) {
+if (isset($_POST['moveFileNewPath']) && $gsUpload->isJSON($_POST["moveFileNewPath"]) ) {
 	header('Content-Type: application/json');
 	echo json_encode($gsUpload -> moveFile());
 }
-?>
