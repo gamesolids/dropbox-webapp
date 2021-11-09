@@ -3,10 +3,11 @@
 namespace gamesolids;
 
 /**
- * browse files in dropbox
+ * Uses $_POST data to format a file information request
+ * 
  */
 
-class webappBrowser {
+class WebappBrowser {
 
 	protected $dropbox = NULL;
 	private $currentPath = "/";
@@ -14,7 +15,7 @@ class webappBrowser {
 
 	public function __construct(){
 		require 'webapp.base.php';
-		$this->dropbox = new webappBase();
+		$this->dropbox = new WebappBase();
 	}
 
 
@@ -86,5 +87,3 @@ if (isset($_POST["get"])) {
 	header('Content-Type: application/json');
 	echo json_encode($gsBrowser -> getFolder());
 }
-
-?>
