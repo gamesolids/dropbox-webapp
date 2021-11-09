@@ -48,9 +48,9 @@ Or, as in the wikimedia use case: makes great Large File Storage for project doc
 	* 
 	*/
 
-	define( 'DBEEP_KEY', "app_key" );
-	define( 'DBEEP_SECRET', "app_secret" );
-	define ('DBEEP_TOKEN', "access_token" );
+	define( 'GS_APP_KEY', "app_key" );
+	define( 'GS_APP_SECRET', "app_secret" );
+	define ('GS_APP_TOKEN', "access_token" );
 
 ```
 6. Add your app's key, secret, and access token in the config file.
