@@ -10,9 +10,13 @@ class WebappUploader {
 
 	private $dropbox = NULL;
 
+	/**
+	 * Class constructor
+	 * 
+	 */
 	public function __construct(){
 		require 'webapp.base.php';
-		$this->dropbox = new webappBase();
+		$this->dropbox = new WebappBase();
 	}
 
 	/**

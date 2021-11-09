@@ -81,7 +81,7 @@ class WebappBrowser {
 } // end class
 
 
-$gsBrowser = new webappBrowser();
+$gsBrowser = new WebappBrowser();
 
 if (isset($_POST["get"])) {
 	header('Content-Type: application/json');
