@@ -66,10 +66,7 @@ class WebappBase
 	 * @param string $destination Optional. The dropbox path where the file will be stored. Defalut is the app root.
 	 * @return array An associaciative array with file data or error information.
 	 */
-	private function newFile($file, $destination) {
-
-		//use current location if unspecified
-		$destination = is_null($destination)?$this-getPath():$destination;
+	private function newFile($file, $destination="/") {
 
 		$response  = array('responseType' => '','response' => array('message' => '','content' => false, ), );
 
@@ -108,10 +105,7 @@ class WebappBase
 	 * @param string $destination Optional. Where you want to create the folder. Root is default.
 	 * @return array An associaciative array with folder data or error information.
 	 */
-	private function newFolder($name, $destination) {
-
-		//use current location if unspecified
-		$destination = is_null($destination)?$this-getPath():$destination;
+	private function newFolder($name, $destination="/") {
 
 		$response  = array('responseType' => '','response' => array('message' => '','content' => false, ), );
 
