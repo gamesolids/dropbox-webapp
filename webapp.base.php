@@ -418,7 +418,10 @@ class webappBase
 	} // end getFolderContents
 
 	// TODO: duplicate, rename
-
+	private function isJson($str) {
+		$json = json_decode($str);
+		return $json && $str != $json;
+	}
 } // end class
 
 
