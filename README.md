@@ -38,23 +38,19 @@ Or, as in the wikimedia use case: makes great Large File Storage for project doc
 	`$ nano webapp.config.php`
 
 ```
-	<?php 
-	namespace gamesolids;
-	/* webapp.config.php */
-
-	/* Store your Dropbox application credentials.
-	 * Get these when you set up your app at dropbox.com/developer .
-	 */
-	 
+	<?php
 	namespace gamesolids;
 
-	$dropbox_config = array();
+	/** 
+	* webapp.config.php
+	* Store your Dropbox application credentials.
+	* Get these when you set up your app at dropbox.com/developer 
+	* 
+	*/
 
-	$dropbox_config['app_key'] = " ";
-	$dropbox_config['app_secret'] = " ";
-	$dropbox_config['access_token'] = " ";
-
-	?>
+	define( 'DBEEP_KEY', "app_key" );
+	define( 'DBEEP_SECRET', "app_secret" );
+	define ('DBEEP_TOKEN', "access_token" );
 
 ```
 6. Add your app's key, secret, and access token in the config file.
